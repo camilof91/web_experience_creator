@@ -8,11 +8,11 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "bun jest" 
+    "test": "bun jest"
   },
   "dependencies": {
     "@astrojs/check": "^0.7.0",
-    "astro": "^4.10.3",
+    "astro": "^4.13.1",
     "node-localstorage": "^3.0.5",
     "typescript": "^5.4.5"
   },
