@@ -1,0 +1,3442 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Mancii Constructor">
+  <style is:global>
+    .delete-button {
+      background-color: transparent;
+      border: none;
+      color: #e20c0c;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 10px;
+      float: right;
+      background-size: 85%;
+      background-position: center;
+      border-radius: .3rem;
+    }
+
+    .delete-button:hover {
+      background-color: #555;
+    }
+
+    #selector-line-left,
+    #selector-line-top,
+    #selector-line-right,
+    #selector-line-bottom {
+      position: absolute;
+      width: 0px;
+      height: 2px;
+      z-index: 1000;
+      background-color: #9cc0d8;
+    }
+
+    #selector-line-left {
+      transform-origin: 0% 0%;
+      transform: rotate(90deg);
+    }
+
+    #selector-line-top {
+      transform-origin: 0% 0%;
+      transform: rotate(0deg);
+    }
+
+    #selector-line-right {
+      transform-origin: 0% 100%;
+      transform: rotate(-90deg);
+    }
+
+    #selector-line-bottom {
+    transform-origin: 0% 100%;
+    transform: rotate(180deg);  
+    }
+  </style>
+  <div id="selector-line-left" ></div>
+  <div id="selector-line-top" ></div>
+  <div id="selector-line-right" ></div>
+  <div id="selector-line-bottom" ></div>
+  <button id="toggleLeftBar" class="toggle-sidebar-button"
+    >Ocultar Barra Lateral</button
+  >
+  <button id="toggleRightBar" class="toggle-right-bar"
+    >Ocultar Barra Lateral</button
+  >
+  <div id="sidebar" class="sidebar">
+    <nav class="sidebar__nav">
+      <ul class="nav__list">
+
+        <li class="nav__item nav__item--active"  data-section="todos">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M14.116 20q-.667 0-1.141-.475t-.475-1.14v-4.27q0-.666.475-1.14t1.14-.475h4.27q.666 0 1.14.475t.475 1.14v4.27q0 .666-.475 1.14t-1.14.475zm0-8.5q-.667 0-1.141-.475t-.475-1.14v-4.27q0-.666.475-1.14T14.115 4h4.27q.666 0 1.14.475T20 5.615v4.27q0 .666-.475 1.14t-1.14.475zm-8.5 0q-.667 0-1.141-.475T4 9.885v-4.27q0-.666.475-1.14T5.615 4h4.27q.666 0 1.14.475t.475 1.14v4.27q0 .666-.475 1.14t-1.14.475zm0 8.5q-.667 0-1.141-.475T4 18.386v-4.27q0-.666.475-1.14t1.14-.475h4.27q.666 0 1.14.475t.475 1.14v4.27q0 .666-.475 1.14T9.885 20z" />
+          </svg>
+        </li>
+
+        <li class="nav__item" data-section="componentes">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 20 20">
+            <path fill="currentColor" d="M4.5 4A2.5 2.5 0 0 0 2 6.5v7A2.5 2.5 0 0 0 4.5 16h11a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 15.5 4zM3 6.5A1.5 1.5 0 0 1 4.5 5h11A1.5 1.5 0 0 1 17 6.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 13.5zM4.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1zm.5 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1z" />
+          </svg>
+        </li>
+
+        <li class="nav__item" data-section="recursos">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m18.965 3.964l-1.48-1.479c-.19-.19-.284-.284-.396-.35a1 1 0 0 0-.248-.102C16.715 2 16.58 2 16.314 2c-1.228 0-1.842 0-2.3.26a2 2 0 0 0-.754.753c-.26.46-.26 1.073-.26 2.3V6.5c0 1.404 0 2.107.337 2.611a2 2 0 0 0 .552.552C14.393 10 15.096 10 16.5 10s2.107 0 2.611-.337a2 2 0 0 0 .552-.552C20 8.607 20 7.896 20 6.475c0-.634 0-.95-.09-1.24a2 2 0 0 0-.14-.337c-.141-.269-.363-.49-.805-.934m0 12.001l-1.48-1.48c-.19-.19-.284-.284-.396-.35a1 1 0 0 0-.248-.102C16.715 14 16.58 14 16.314 14c-1.228 0-1.842 0-2.3.26a2 2 0 0 0-.754.753c-.26.46-.26 1.073-.26 2.3V18.5c0 1.404 0 2.107.337 2.611c.146.218.334.406.552.552c.504.337 1.207.337 2.611.337s2.107 0 2.611-.337c.218-.146.406-.334.552-.552c.337-.504.337-1.215.337-2.636c0-.634 0-.95-.09-1.24a2 2 0 0 0-.14-.337c-.141-.269-.363-.49-.805-.934M10 6H4m0 0V2m0 4v6c0 2.828 0 4.243.879 5.121C5.757 18 7.172 18 10 18" color="currentColor" />
+          </svg>
+        </li>
+
+        <li class="nav__item" data-section="capas">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 16 16">
+            <path fill="currentColor" d="m10.878.282l.348 1.071a2.2 2.2 0 0 0 1.398 1.397l1.072.348l.021.006a.423.423 0 0 1 0 .798l-1.071.348a2.2 2.2 0 0 0-1.399 1.397l-.348 1.07a.423.423 0 0 1-.798 0l-.348-1.07a2.2 2.2 0 0 0-1.399-1.403l-1.072-.348a.423.423 0 0 1 0-.798l1.072-.348a2.2 2.2 0 0 0 1.377-1.397l.348-1.07a.423.423 0 0 1 .799 0m4.905 7.931l-.765-.248a1.58 1.58 0 0 1-1-.999l-.248-.764a.302.302 0 0 0-.57 0l-.25.764a1.58 1.58 0 0 1-.983.999l-.765.248a.303.303 0 0 0 0 .57l.765.249a1.58 1.58 0 0 1 1 1.002l.248.764a.302.302 0 0 0 .57 0l.249-.764a1.58 1.58 0 0 1 .999-.999l.765-.248a.303.303 0 0 0 0-.57zM13.502 12q-.263-.001-.502-.1v.428a.5.5 0 0 1-.301.459l-5 2.168A.5.5 0 0 1 7 14.496V9.645c0-.2.12-.381.303-.46l2.808-1.203l.013-.029a1.3 1.3 0 0 1-.45-.21c-.193-.15-.33-.31-.425-.48l-2.34 1.003A1.5 1.5 0 0 0 6 9.645v4.852a1.5 1.5 0 0 0 2.097 1.376l5-2.169A1.5 1.5 0 0 0 14 12.328v-.407a1.5 1.5 0 0 1-.498.079m-5.47-6.801l-.922-.305l-3.2 1.372A1.5 1.5 0 0 0 3 7.644v4.853a1.5 1.5 0 0 0 2 1.414v-1.084l-.303.13a.5.5 0 0 1-.697-.46V7.644c0-.2.12-.38.303-.46L8.421 5.42a1.2 1.2 0 0 0-.39-.221M6.95 2.154l.122-.04a1.48 1.48 0 0 0-1.164.009L1.515 4.006A2.5 2.5 0 0 0 0 6.304V10.5a1.5 1.5 0 0 0 2 1.414V10.83l-.303.13A.5.5 0 0 1 1 10.5V6.305c0-.6.358-1.142.91-1.379l4.13-1.77q.064-.26.22-.48c.17-.24.41-.421.69-.521" />
+          </svg>
+        </li>
+
+      </ul>
+    </nav>
+    <script>
+      import { deleteMany, createBlinkZoomBounceShineAnimation } from "../ui/core/adapters/storage/localStorageManager";
+
+      
+
+      
+      deleteMany("selections", {type: "element"});
+      document.addEventListener("DOMContentLoaded", () => {
+        
+        const $allSectionButton = document.querySelector<HTMLElement>("li[data-section=\"todos\"]");
+        const $screen = document.querySelector<HTMLElement>("div[data-tab=\"Mobile\"]");
+        const $toggleSidebarButton = document.querySelector<HTMLElement>(".toggle-sidebar-button");
+        const $toggleSidebarBar = document.querySelector<HTMLElement>(".toggle-right-bar");
+        const $componentContainer = document.querySelector<HTMLElement>("#sidebar_components");
+          
+        
+        
+        setTimeout(() => {
+          $allSectionButton.click();
+          $screen.click();
+          $toggleSidebarButton.click();
+          $toggleSidebarBar.click();
+          
+        }, 0)
+        
+        setTimeout(() => {
+          $toggleSidebarButton.click();
+          createBlinkZoomBounceShineAnimation($toggleSidebarButton, { duration: 800, iterations: 1, easing: 'ease-in-out' });
+        }, 700)
+        
+        setTimeout(() => {
+          $componentContainer.click();
+          Array.from($componentContainer.children).forEach((element: HTMLElement, index) => {
+            
+            createBlinkZoomBounceShineAnimation(element, { duration: 700, iterations: 1, easing: 'ease-in-out', delay: index * 100 });
+          });
+        }, 800)
+
+        
+      })
+    </script>
+  <!--
+    <div class="tools__section first-secction">
+      <section class="sidebar__section" data-section="experiencias">
+        <h2 class="sidebar__section-title">Experiencias</h2>
+        <ul class="sidebar__list">
+          <li class="sidebar__item">Experiencia 1</li>
+          <li class="sidebar__item">Experiencia 2</li>
+          <li class="sidebar__item">Experiencia 3</li>
+        </ul>
+      </section>
+    </div>
+    -->
+    <div class="tools__section">
+      <section class="sidebar__section" data-section="componentes">
+        <h2 class="sidebar__section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 20 20">
+            <path fill="currentColor" d="M4.5 4A2.5 2.5 0 0 0 2 6.5v7A2.5 2.5 0 0 0 4.5 16h11a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 15.5 4zM3 6.5A1.5 1.5 0 0 1 4.5 5h11A1.5 1.5 0 0 1 17 6.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 13.5zM4.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1zm.5 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1z" />
+          </svg>
+          Componentes
+        </h2>
+        <ul class="sidebar__list" id="sidebar_components"></ul>
+      </section>
+    </div>
+    <div class="tools__section">
+      <section class="sidebar__section" data-section="recursos">
+        <h2 class="sidebar__section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m18.965 3.964l-1.48-1.479c-.19-.19-.284-.284-.396-.35a1 1 0 0 0-.248-.102C16.715 2 16.58 2 16.314 2c-1.228 0-1.842 0-2.3.26a2 2 0 0 0-.754.753c-.26.46-.26 1.073-.26 2.3V6.5c0 1.404 0 2.107.337 2.611a2 2 0 0 0 .552.552C14.393 10 15.096 10 16.5 10s2.107 0 2.611-.337a2 2 0 0 0 .552-.552C20 8.607 20 7.896 20 6.475c0-.634 0-.95-.09-1.24a2 2 0 0 0-.14-.337c-.141-.269-.363-.49-.805-.934m0 12.001l-1.48-1.48c-.19-.19-.284-.284-.396-.35a1 1 0 0 0-.248-.102C16.715 14 16.58 14 16.314 14c-1.228 0-1.842 0-2.3.26a2 2 0 0 0-.754.753c-.26.46-.26 1.073-.26 2.3V18.5c0 1.404 0 2.107.337 2.611c.146.218.334.406.552.552c.504.337 1.207.337 2.611.337s2.107 0 2.611-.337c.218-.146.406-.334.552-.552c.337-.504.337-1.215.337-2.636c0-.634 0-.95-.09-1.24a2 2 0 0 0-.14-.337c-.141-.269-.363-.49-.805-.934M10 6H4m0 0V2m0 4v6c0 2.828 0 4.243.879 5.121C5.757 18 7.172 18 10 18" color="currentColor" />
+          </svg>
+          Recursos</h2>
+        <input type="file" id="fileInput" multiple placeholder="" />
+        <label for="fileInput">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+              <path stroke-linejoin="round" d="M14.186 2.753v3.596c0 .487.194.955.54 1.3a1.85 1.85 0 0 0 1.306.539h4.125" />
+              <path stroke-linejoin="round" d="M20.25 8.568v8.568a4.251 4.251 0 0 1-1.362 2.97a4.283 4.283 0 0 1-3.072 1.14h-7.59a4.294 4.294 0 0 1-3.1-1.124a4.265 4.265 0 0 1-1.376-2.986V6.862a4.25 4.25 0 0 1 1.362-2.97a4.283 4.283 0 0 1 3.072-1.14h5.714a3.503 3.503 0 0 1 2.361.905l2.96 2.722a2.971 2.971 0 0 1 1.031 2.189" />
+              <path stroke-miterlimit="10" d="M12 10.499v6.774" />
+              <path stroke-linejoin="round" d="m15.106 13.35l-2.665-2.665a.62.62 0 0 0-.882 0l-2.665 2.666" />
+            </g>
+          </svg>
+          Cargar recursos
+        </label>
+        <ul class="sidebar__list" id="resourceList"></ul>
+      </section>
+    </div>
+
+    <div class="tools__section">
+      <section class="sidebar__section" data-section="capas">
+        <!--add id to capas list -->
+        <h2 class="sidebar__section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 16 16">
+            <path fill="currentColor" d="m10.878.282l.348 1.071a2.2 2.2 0 0 0 1.398 1.397l1.072.348l.021.006a.423.423 0 0 1 0 .798l-1.071.348a2.2 2.2 0 0 0-1.399 1.397l-.348 1.07a.423.423 0 0 1-.798 0l-.348-1.07a2.2 2.2 0 0 0-1.399-1.403l-1.072-.348a.423.423 0 0 1 0-.798l1.072-.348a2.2 2.2 0 0 0 1.377-1.397l.348-1.07a.423.423 0 0 1 .799 0m4.905 7.931l-.765-.248a1.58 1.58 0 0 1-1-.999l-.248-.764a.302.302 0 0 0-.57 0l-.25.764a1.58 1.58 0 0 1-.983.999l-.765.248a.303.303 0 0 0 0 .57l.765.249a1.58 1.58 0 0 1 1 1.002l.248.764a.302.302 0 0 0 .57 0l.249-.764a1.58 1.58 0 0 1 .999-.999l.765-.248a.303.303 0 0 0 0-.57zM13.502 12q-.263-.001-.502-.1v.428a.5.5 0 0 1-.301.459l-5 2.168A.5.5 0 0 1 7 14.496V9.645c0-.2.12-.381.303-.46l2.808-1.203l.013-.029a1.3 1.3 0 0 1-.45-.21c-.193-.15-.33-.31-.425-.48l-2.34 1.003A1.5 1.5 0 0 0 6 9.645v4.852a1.5 1.5 0 0 0 2.097 1.376l5-2.169A1.5 1.5 0 0 0 14 12.328v-.407a1.5 1.5 0 0 1-.498.079m-5.47-6.801l-.922-.305l-3.2 1.372A1.5 1.5 0 0 0 3 7.644v4.853a1.5 1.5 0 0 0 2 1.414v-1.084l-.303.13a.5.5 0 0 1-.697-.46V7.644c0-.2.12-.38.303-.46L8.421 5.42a1.2 1.2 0 0 0-.39-.221M6.95 2.154l.122-.04a1.48 1.48 0 0 0-1.164.009L1.515 4.006A2.5 2.5 0 0 0 0 6.304V10.5a1.5 1.5 0 0 0 2 1.414V10.83l-.303.13A.5.5 0 0 1 1 10.5V6.305c0-.6.358-1.142.91-1.379l4.13-1.77q.064-.26.22-.48c.17-.24.41-.421.69-.521" />
+          </svg>
+          Capas</h2>
+        <ul class="sidebar__item" id="layer_list">
+          <!-- <li class="sidebar__item">Capa 1</li>
+          <li class="sidebar__item">Capa 2</li>
+          <li class="sidebar__item">Capa 3</li> -->
+        </ul>
+      </section>
+    </div>
+  </div>
+</Layout>
+<!-- funcion seleccionar elementos en side bar -->
+<script>
+  import { initializeSideTabs } from "../ui/FileSideTabs/useCases/sideTabs";
+  document.addEventListener("DOMContentLoaded", () => {
+    initializeSideTabs();
+  });
+</script>
+
+<script>
+  import { updateLayerList } from "../ui/FilesLayers/useCases/updateLayerList";
+  document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.querySelector(".canvas__active");
+    // Select  id layer_list from capas
+    const layerList = document.getElementById("layer_list");
+
+    if (canvas instanceof HTMLElement && layerList instanceof HTMLElement) {
+      updateLayerList(canvas, layerList);
+    }
+  });
+</script>
+
+<main class="canvas">
+  <div class="canvas__tabs">
+    <div class="canvas__tab canvas__tab--active" data-tab="Mobile">Mobile</div>
+    <div class="canvas__tab" data-tab="Table">Tablet</div>
+    <div class="canvas__tab" data-tab="Desktop">Desktop</div>
+  </div>
+  <div class="canvas__content" id="tab-content-Mobile" style="width: 360px;">
+  </div>
+  <div class="canvas__content" id="tab-content-Table" style="width: 768px;">
+  </div>
+  <div class="canvas__content" id="tab-content-Desktop" style="width: 1024px;">
+  </div>
+  <div id="canvas__styles"></div>
+</main>
+
+<!-- resourses list -->
+<script>
+  import { initializeResourceList } from "../ui/FileResourses/useCases/updateResoursesList.ts";
+  document.addEventListener("DOMContentLoaded", () => {
+    initializeResourceList();
+  });
+</script>
+
+<script>
+  import { inicializeDrop } from "../ui/components/adapters/createComponenetItemMenu";
+  document.addEventListener("DOMContentLoaded", inicializeDrop);
+</script>
+
+<script>
+  import { tabactivation } from "../ui/tabs/useCases/tabsCanva";
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabs = Array.from(
+      document.querySelectorAll<HTMLElement>(".canvas__tab"),
+    );
+    const canvasContents = Array.from(
+      document.querySelectorAll<HTMLElement>(".canvas__content"),
+    );
+    tabactivation(tabs, canvasContents);
+  });
+</script>
+
+<script>
+  import { handleMiniDOMSerialization } from "../ui/core/useCases/createGenerator";
+  import { selectorOption } from "../ui/core/useCases/generatorPlugin";
+  import { createMiniDOM } from "../ui/core/useCases/miniDOMHandler";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Seleccionar el contenedor de inputs dinámicos
+    const dynamicInputsContainer = document.querySelector<HTMLElement>('#dynamic-inputs-container');
+
+    // Seleccionar el select que define el tipo de generación
+    const generationTypeSelect = document.querySelector<HTMLSelectElement>('#generation-type');
+
+    // Añadir un event listener para el evento change en el select de tipo de generación
+    generationTypeSelect.addEventListener('change', selectorOption(dynamicInputsContainer, generationTypeSelect));
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const button =
+      document.querySelector<HTMLButtonElement>("#plugin-generator");
+
+    if (!button) {
+      console.error('No se encontró el botón con ID "plugin-generator".');
+      return;
+    }
+
+    button.addEventListener("click", () => {
+      const activeElement = document.querySelector<HTMLElement>(
+        ".canvas__content--active",
+      );
+      if (!activeElement) {
+        console.error(
+          'No se encontró el elemento con clase "canvas__content--active".',
+        );
+        return;
+      }
+
+      const miniDOM = createMiniDOM(activeElement);
+      handleMiniDOMSerialization(miniDOM);
+    });
+  });
+</script>
+
+
+
+<aside id="rightbar" class="tools aside">
+  <!-- Modelo de Caja -->
+
+  <div class="tools__section tools_section_rightbar">
+    <h3 class="tools__title"><svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor">
+        <path d="M20 12.5V7.818c0-1.693 0-2.54-.268-3.216c-.43-1.087-1.342-1.944-2.497-2.35C16.517 2 15.617 2 13.818 2c-3.148 0-4.722 0-5.98.441c-2.02.71-3.615 2.21-4.37 4.113C3 7.737 3 9.219 3 12.182v2.545c0 3.07 0 4.604.848 5.67q.366.461.855.805C5.81 21.982 7.39 22 10.5 22" />
+        <path d="M3 12a3.333 3.333 0 0 1 3.333-3.333c.666 0 1.451.116 2.098-.057A1.67 1.67 0 0 0 9.61 7.43c.173-.647.057-1.432.057-2.098A3.333 3.333 0 0 1 13 2m1.813 20c-.57-.59-2.813-2.16-2.813-3s2.244-2.41 2.813-3m3.374 6c.57-.59 2.813-2.16 2.813-3s-2.244-2.41-2.812-3" />
+      </g>
+    </svg> Generador de plugin</h3>
+    <div class="tools__content">
+      <fieldset id="plugin-generator-fieldset">
+        <legend>Configuración del plugin</legend>
+        <!-- Select para definir el tipo de generación -->
+        <select id="generation-type" name="type">
+          <option value="event-modal">Modal activado por evento</option>
+          <option value="button-modal">Modal activado por botón</option>
+          <option value="element-inject">Inyectar en un elemento</option>
+        </select>
+        <!-- Contenedor de los inputs dinámicos -->
+        <div id="dynamic-inputs-container"></div>
+        <button id="plugin-generator"><svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+            <path stroke-dasharray="14" stroke-dashoffset="14" d="M6 19h12">
+              <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.5s" dur="0.4s" values="14;0" />
+            </path>
+            <path stroke-dasharray="18" stroke-dashoffset="18" d="M12 4 h2 v6 h2.5 L12 14.5M12 4 h-2 v6 h-2.5 L12 14.5">
+              <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="18;0" />
+              <animate attributeName="d" calcMode="linear" dur="1.5s" keyTimes="0;0.7;1" repeatCount="indefinite" values="M12 4 h2 v6 h2.5 L12 14.5M12 4 h-2 v6 h-2.5 L12 14.5;M12 4 h2 v3 h2.5 L12 11.5M12 4 h-2 v3 h-2.5 L12 11.5;M12 4 h2 v6 h2.5 L12 14.5M12 4 h-2 v6 h-2.5 L12 14.5" />
+            </path>
+          </g>
+        </svg> </button>
+      </fieldset>
+    </div>
+  </div>
+
+
+
+<!-- Texto -->
+<div class="tools__section">
+  <h3 class="tools__title">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor">
+          <path d="M7 9.5c-.24-1.995.916-2.403 5-2.5m0 0c4.123.1 5.341.598 5 2.5M12 7v10m-2 0h4" />
+          <path d="M3.891 3.891C2.5 5.282 2.5 7.521 2.5 12c0 4.478 0 6.718 1.391 8.109S7.521 21.5 12 21.5c4.478 0 6.718 0 8.109-1.391S21.5 16.479 21.5 12c0-4.478 0-6.718-1.391-8.109S16.479 2.5 12 2.5c-4.478 0-6.718 0-8.109 1.391" />
+        </g>
+      </svg>
+    Texto
+  </h3>
+  <div class="tools__content">
+    <fieldset>
+      <legend>Texto</legend>
+
+      <label for="text">Texto:</label>
+      <input type="text" data-path="textContent" id="text" name="text" placeholder="Ejemplo de texto" />
+
+      <!-- Familia de Fuentes -->
+      <label for="font-family">Familia de Fuentes:</label>
+      <input type="text" data-path="style.fontFamily" id="font-family" name="font-family" placeholder="Arial, sans-serif" />
+
+      <!-- Tamaño de Fuente -->
+      <label for="font-size">Tamaño de Fuente:</label>
+      <div class="input-group">
+        <select id="font-size-unit-select" data-path="style.fontSize" data-scheme="calc(var(--font-size-scale, 1) * var(--font-size-unit, 1px))" data-variable="font-size-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+        </select>
+        <input type="number" id="font-size-scale" name="font-size-scale" data-path="style.fontSize" data-scheme="calc(var(--font-size-scale, 1) * var(--font-size-unit, 1px))" data-variable="font-size-scale" value="16" min="1" step="1" />
+      </div>
+
+      <!-- Color de Fuente -->
+      <label for="color">Color:</label>
+      <input type="color" data-path="style.color" id="color" name="color" value="#000000" />
+
+      <!-- Peso de Fuente -->
+      <label for="font-weight">Peso de Fuente:</label>
+      <select data-path="style.fontWeight" id="font-weight">
+        <option value="normal">Normal</option>
+        <option value="bold">Bold</option>
+        <option value="bolder">Bolder</option>
+        <option value="lighter">Lighter</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="300">300</option>
+        <option value="400">400</option>
+        <option value="500">500</option>
+        <option value="600">600</option>
+        <option value="700">700</option>
+        <option value="800">800</option>
+        <option value="900">900</option>
+      </select>
+
+      <!-- Estilo de Fuente -->
+      <label for="font-style">Estilo de Fuente:</label>
+      <select data-path="style.fontStyle" id="font-style">
+        <option value="normal">Normal</option>
+        <option value="italic">Italic</option>
+        <option value="oblique">Oblique</option>
+      </select>
+
+      <!-- Transformación de Texto -->
+      <label for="text-transform">Transformación de Texto:</label>
+      <select data-path="style.textTransform" id="text-transform">
+        <option value="none">None</option>
+        <option value="capitalize">Capitalize</option>
+        <option value="uppercase">Uppercase</option>
+        <option value="lowercase">Lowercase</option>
+      </select>
+
+      <!-- Decoración de Texto -->
+      <label for="text-decoration">Decoración de Texto:</label>
+      <select data-path="style.textDecoration" id="text-decoration">
+        <option value="none">None</option>
+        <option value="underline">Underline</option>
+        <option value="overline">Overline</option>
+        <option value="line-through">Line Through</option>
+      </select>
+
+      <!-- Color de Decoración de Texto -->
+      <label for="text-decoration-color">Color de Decoración:</label>
+      <input type="color" data-path="style.textDecorationColor" id="text-decoration-color" name="text-decoration-color" value="#000000" />
+
+      <!-- Alineación de Texto -->
+      <label for="text-align">Alineación de Texto:</label>
+      <select data-path="style.textAlign" id="text-align">
+        <option value="left">Left</option>
+        <option value="right">Right</option>
+        <option value="center">Center</option>
+        <option value="justify">Justify</option>
+      </select>
+
+      <!-- Espaciado entre Letras -->
+      <label for="letter-spacing">Espaciado entre Letras:</label>
+      <div class="input-group">
+        <select id="letter-spacing-unit-select" data-path="style.letterSpacing" data-scheme="calc(var(--letter-spacing-scale, 1) * var(--letter-spacing-unit, 1px))" data-variable="letter-spacing-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <input type="number" id="letter-spacing-scale" name="letter-spacing-scale" data-path="style.letterSpacing" data-scheme="calc(var(--letter-spacing-scale, 1) * var(--letter-spacing-unit, 1px))" data-variable="letter-spacing-scale" value="0" min="0" step="0.1" />
+      </div>
+
+      <!-- Altura de Línea -->
+      <label for="line-height">Altura de Línea:</label>
+      <div class="input-group">
+        <select id="line-height-unit-select" data-path="style.lineHeight" data-scheme="calc(var(--line-height-scale, 1) * var(--line-height-unit, 1px))" data-variable="line-height-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <input type="number" id="line-height-scale" name="line-height-scale" data-path="style.lineHeight" data-scheme="calc(var(--line-height-scale, 1) * var(--line-height-unit, 1px))" data-variable="line-height-scale" value="1.5" min="1" step="0.1" />
+      </div>
+
+      <!-- Sombra de texto -->
+      <label for="text-shadow">Sombra de Texto:</label>
+      <div class="shadow-group">
+        <label for="text-shadow-offset-x">Offset X:</label>
+        <input data-path="style.textShadow" data-scheme="var(--text-shadow-offset-x, 0px) var(--text-shadow-offset-y, 0px) var(--text-shadow-blur, 0px) var(--text-shadow-color, #000)" data-variable="text-shadow-offset-x" type="number" id="text-shadow-offset-x" name="text-shadow-offset-x" placeholder="Offset X" step="1" value="0" />
+        <select id="text-shadow-offset-x-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="text-shadow-offset-y">Offset Y:</label>
+        <input data-path="style.textShadow" data-scheme="var(--text-shadow-offset-x, 0px) var(--text-shadow-offset-y, 0px) var(--text-shadow-blur, 0px) var(--text-shadow-color, #000)" data-variable="text-shadow-offset-y" type="number" id="text-shadow-offset-y" name="text-shadow-offset-y" placeholder="Offset Y" step="1" value="0" />
+        <select id="text-shadow-offset-y-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="text-shadow-blur">Blur:</label>
+        <input data-path="style.textShadow" data-scheme="var(--text-shadow-offset-x, 0px) var(--text-shadow-offset-y, 0px) var(--text-shadow-blur, 0px) var(--text-shadow-color, #000)" data-variable="text-shadow-blur" type="number" id="text-shadow-blur" name="text-shadow-blur" placeholder="Blur" step="1" value="0" />
+        <select id="text-shadow-blur-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="text-shadow-color">Color:</label>
+        <input data-path="style.textShadow" data-scheme="var(--text-shadow-offset-x, 0px) var(--text-shadow-offset-y, 0px) var(--text-shadow-blur, 0px) var(--text-shadow-color, #000)" data-variable="text-shadow-color" type="color" id="text-shadow-color" name="text-shadow-color" value="#000000" />
+      </div>
+    </fieldset>
+  </div>
+</div>
+
+
+
+  <div class="tools__section">
+    <h3 class="tools__title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8v8H8zM4 4v.01M8 4v.01M12 4v.01M16 4v.01M20 4v.01M4 20v.01M8 20v.01m4-.01v.01m4-.01v.01m4-.01v.01M20 16v.01M20 12v.01M20 8v.01M4 16v.01M4 12v.01M4 8v.01" />
+      </svg>
+      Modelo de Caja</h3>
+    <div class="tools__content">
+      <fieldset>
+        <legend>Modelo de Caja</legend>
+
+        <style>
+          .container {
+            display: block;
+            width: 300px;
+            height: 300px;
+            position: relative;
+          }
+
+          .box {
+            position: absolute;
+            background-color: #333;
+            width: 220px;
+            height: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            transform: translate(40px, 50%);
+          }
+
+          .box__inner {
+            background-color: #555;
+            width: 200px;
+            height: 110px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            color: #fff;
+          }
+
+          .input-container {
+            position: absolute;
+            display: flex;
+            background-color: #444;
+            display: inline-flex;
+            width: auto;
+            white-space: nowrap;
+            height: 20px;
+            border-radius: 4px;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: nowrap;
+          }
+
+          .input-container :is(input, select) {
+            background-color: #444;
+            border: none;
+            color: #fff;
+            text-align: center;
+            font-size: 9px;
+            padding: 0px;
+            line-height: 10px;
+            width: 1.5rem;
+            margin: 0;
+            border-radius: 2px;
+            text-align: center;
+          }
+
+          .input-container :is(input, select):focus {
+            outline: none;
+          }
+
+          .input-container--top {
+            top: -30px;
+          }
+
+          .input-container--bottom {
+            bottom: -30px;
+          }
+
+          .input-container--left {
+            left: -50px;
+          }
+
+          .input-container--right {
+            right: -50px;
+          }
+
+          .input-container--center {
+            display: flex;
+            gap: 1px;
+          }
+
+          .input-container--center input {
+            width: 30px;
+          }
+
+          .input-container--center input:first-child {
+            direction: rtl;
+          }
+          #height-scale {
+            direction: rtl;
+          }
+        </style>
+        <div class="container">
+          <div class="box">
+            <div class="box__inner">
+              <div class="input-container input-container--center">
+                <input
+                  data-path="style.width"
+                  data-scheme={`calc(var(--width-scale) * var(--width-unit, 1px))`}
+                  data-variable="width-scale"
+                  type="number"
+                  id="width-scale"
+                  name="width-scale"
+                  value="1"
+                  min="0"
+                  step="1"
+                />
+                <select
+                  id="width-unit-select"
+                  data-path="style.width"
+                  data-scheme={`calc(var(--width-scale) * var(--width-unit, 1px))`}
+                  data-variable="width-unit"
+                  data-starts-with="1"
+                  style="margin-inline-end: .7rem;"
+                >
+                  <option value="px">px</option>
+                  <option value="em">em</option>
+                  <option value="rem">rem</option>
+                  <option value="%">%</option>
+                  <option value="vw">vw</option>
+                  <option value="vh">vh</option>
+                  <option value="vmin">vmin</option>
+                  <option value="vmax">vmax</option>
+                  <option value="cm">cm</option>
+                  <option value="mm">mm</option>
+                  <option value="in">in</option>
+                  <option value="pt">pt</option>
+                  <option value="pc">pc</option>
+                  <option value="ch">ch</option>
+                  <option value="ex">ex</option>
+                  <option value="q">q</option>
+                  <option value="lh">lh</option>
+                </select>
+
+                x
+
+                <input
+                  data-path="style.height"
+                  data-scheme={`calc(var(--height-scale) * var(--height-unit, 1px))`}
+                  data-variable="height-scale"
+                  type="number"
+                  id="height-scale"
+                  name="height-scale"
+                  value="1"
+                  min="0"
+                  step="1"
+                />
+                <select
+                  id="height-unit-select"
+                  data-path="style.height"
+                  data-scheme={`calc(var(--height-scale) * var(--height-unit, 1px))`}
+                  data-variable="height-unit"
+                  data-starts-with="1"
+                >
+                  <option value="px">px</option>
+                  <option value="em">em</option>
+                  <option value="rem">rem</option>
+                  <option value="%">%</option>
+                  <option value="vw">vw</option>
+                  <option value="vh">vh</option>
+                  <option value="vmin">vmin</option>
+                  <option value="vmax">vmax</option>
+                  <option value="cm">cm</option>
+                  <option value="mm">mm</option>
+                  <option value="in">in</option>
+                  <option value="pt">pt</option>
+                  <option value="pc">pc</option>
+                  <option value="ch">ch</option>
+                  <option value="ex">ex</option>
+                  <option value="q">q</option>
+                  <option value="lh">lh</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-container input-container--top">
+              <input
+                data-path="style.marginTop"
+                data-scheme={`calc(var(--margin-top-scale, 0) * var(--margin-top-unit, 1px))`}
+                data-variable="margin-top-scale"
+                type="number"
+                step="1"
+                value="0"
+                id="margin-top-scale"
+                name="margin-top-scale"
+              />
+              <select
+                data-path="style.marginTop"
+                data-scheme={`calc(var(--margin-top-scale, 0) * var(--margin-top-unit, 1px))`}
+                data-variable="margin-top-unit"
+                data-starts-with="1"
+                data-path="style.marginTop"
+                value="px"
+                id="margin-top"
+                name="margin-top"
+              >
+                <option value="px">px</option>
+                <option value="em">em</option>
+                <option value="rem">rem</option>
+                <option value="%">%</option>
+                <option value="vw">vw</option>
+                <option value="vh">vh</option>
+                <option value="vmin">vmin</option>
+                <option value="vmax">vmax</option>
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+                <option value="in">in</option>
+                <option value="pt">pt</option>
+                <option value="pc">pc</option>
+                <option value="ch">ch</option>
+                <option value="ex">ex</option>
+                <option value="q">q</option>
+                <option value="lh">lh</option>
+              </select>
+            </div>
+            <div class="input-container input-container--bottom">
+              <input
+                data-path="style.marginBottom"
+                data-scheme={`calc(var(--margin-bottom-scale, 0) * var(--margin-bottom-unit, 1px))`}
+                data-variable="margin-bottom-scale"
+                type="number"
+                step="1"
+                value="0"
+                id="margin-bottom-scale"
+                name="margin-bottom-scale"
+              />
+              <select
+                data-path="style.marginBottom"
+                data-scheme={`calc(var(--margin-bottom-scale, 0) * var(--margin-bottom-unit, 1px))`}
+                data-variable="margin-bottom-unit"
+                data-starts-with="1"
+                data-path="style.marginBottom"
+                id="margin-bottom"
+                name="margin-bottom"
+              >
+                <option value="px">px</option>
+                <option value="em">em</option>
+                <option value="rem">rem</option>
+                <option value="%">%</option>
+                <option value="vw">vw</option>
+                <option value="vh">vh</option>
+                <option value="vmin">vmin</option>
+                <option value="vmax">vmax</option>
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+                <option value="in">in</option>
+                <option value="pt">pt</option>
+                <option value="pc">pc</option>
+                <option value="ch">ch</option>
+                <option value="ex">ex</option>
+                <option value="q">q</option>
+                <option value="lh">lh</option>
+              </select>
+            </div>
+            <div class="input-container input-container--left">
+              <input
+                data-path="style.marginLeft"
+                data-scheme={`calc(var(--margin-left-scale, 0) * var(--margin-left-unit, 1px))`}
+                data-variable="margin-left-scale"
+                type="number"
+                step="1"
+                value="0"
+                id="margin-left-scale"
+                name="margin-left-scale"
+              />
+              <select
+                data-path="style.marginLeft"
+                data-scheme={`calc(var(--margin-left-scale, 0) * var(--margin-left-unit, 1px))`}
+                data-variable="margin-left-unit"
+                data-starts-with="1"
+                id="margin-left"
+                name="margin-left"
+              >
+                <option value="px">px</option>
+                <option value="em">em</option>
+                <option value="rem">rem</option>
+                <option value="%">%</option>
+                <option value="vw">vw</option>
+                <option value="vh">vh</option>
+                <option value="vmin">vmin</option>
+                <option value="vmax">vmax</option>
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+                <option value="in">in</option>
+                <option value="pt">pt</option>
+                <option value="pc">pc</option>
+                <option value="ch">ch</option>
+                <option value="ex">ex</option>
+                <option value="q">q</option>
+                <option value="lh">lh</option>
+              </select>
+            </div>
+            <div class="input-container input-container--right">
+              <input
+                data-path="style.marginRight"
+                data-scheme={`calc(var(--margin-right-scale, 0) * var(--margin-right-unit, 1px))`}
+                data-variable="margin-right-scale"
+                type="number"
+                step="1"
+                value="0"
+                id="margin-right-scale"
+                name="margin-right-scale"
+              />
+              <select
+                data-path="style.marginRight"
+                data-scheme={`calc(var(--margin-right-scale, 0) * var(--margin-right-unit, 1px))`}
+                data-variable="margin-right-unit"
+                data-starts-with="1"
+                value="px"
+                id="margin-right"
+                name="margin-right"
+              >
+                <option value="px">px</option>
+                <option value="em">em</option>
+                <option value="rem">rem</option>
+                <option value="%">%</option>
+                <option value="vw">vw</option>
+                <option value="vh">vh</option>
+                <option value="vmin">vmin</option>
+                <option value="vmax">vmax</option>
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+                <option value="in">in</option>
+                <option value="pt">pt</option>
+                <option value="pc">pc</option>
+                <option value="ch">ch</option>
+                <option value="ex">ex</option>
+                <option value="q">q</option>
+                <option value="lh">lh</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Margen -->
+        <div class="box-model-options"></div>
+
+        <!-- Relleno -->
+        <div class="box-model-options">
+          <label for="padding-top">Relleno Superior:</label>
+          <input
+            data-path="style.paddingTop"
+            data-scheme={`calc(var(--padding-top-scale, 0) * var(--padding-top-unit, 1px))`}
+            data-variable="padding-top-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="padding-top"
+            name="padding-top"
+            placeholder="rem"
+          />
+          <input
+            data-path="style.paddingTop"
+            data-scheme={`calc(var(--padding-top-scale, 0) * var(--padding-top-unit, 1px))`}
+            data-variable="padding-top-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="padding-top-scale"
+            name="padding-top-scale"
+          />
+
+          <label for="padding-right">Relleno Derecho:</label>
+          <input
+            data-path="style.paddingRight"
+            data-scheme={`calc(var(--padding-right-scale, 0) * var(--padding-right-unit, 1px))`}
+            data-variable="padding-right-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="padding-right"
+            name="padding-right"
+            placeholder="rem"
+          />
+          <input
+            data-path="style.paddingRight"
+            data-scheme={`calc(var(--padding-right-scale, 0) * var(--padding-right-unit, 1px))`}
+            data-variable="padding-right-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="padding-right-scale"
+            name="padding-right-scale"
+          />
+
+          <label for="padding-bottom">Relleno Inferior:</label>
+          <input
+            data-path="style.paddingBottom"
+            data-scheme={`calc(var(--padding-bottom-scale, 0) * var(--padding-bottom-unit, 1px))`}
+            data-variable="padding-bottom-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="padding-bottom"
+            name="padding-bottom"
+            placeholder="rem"
+          />
+          <input
+            data-path="style.paddingBottom"
+            data-scheme={`calc(var(--padding-bottom-scale, 0) * var(--padding-bottom-unit, 1px))`}
+            data-variable="padding-bottom-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="padding-bottom-scale"
+            name="padding-bottom-scale"
+          />
+          <label for="padding-left">Relleno Izquierdo:</label>
+          <input
+            data-path="style.paddingLeft"
+            data-scheme={`calc(var(--padding-left-scale, 0) * var(--padding-left-unit, 1px))`}
+            data-variable="padding-left-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="padding-left"
+            name="padding-left"
+            placeholder="rem"
+          />
+          <input
+            data-path="style.paddingLeft"
+            data-scheme={`calc(var(--padding-left-scale, 0) * var(--padding-left-unit, 1px))`}
+            data-variable="padding-left-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="padding-left-scale"
+            name="padding-left-scale"
+          />
+        </div>
+
+        <!-- Posicionamiento -->
+        <div class="box-model-options">
+          <label for="position">Posición:</label>
+          <select id="position" name="position" data-path="style.position">
+            <option value="static">Estático</option>
+            <option value="relative">Relativo</option>
+            <option value="absolute">Absoluto</option>
+            <!-- <option value="fixed">Fijo</option> -->
+            <option value="sticky">Pegajoso</option>
+          </select>
+
+          <label for="top">Arriba:</label>
+          <input
+            data-path="style.top"
+            data-scheme={`calc(var(--top-scale, 0) * var(--top-unit, 1px))`}
+            data-variable="top-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="top"
+            name="top"
+            placeholder="px"
+          />
+          <input
+            data-path="style.top"
+            data-scheme={`calc(var(--top-scale, 0) * var(--top-unit, 1px))`}
+            data-variable="top-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="top-scale"
+            name="top-scale"
+          />
+
+          <label for="left">Izquierda:</label>
+          <input
+            data-path="style.left"
+            data-scheme={`calc(var(--left-scale, 0) * var(--left-unit, 1px))`}
+            data-variable="left-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="left"
+            name="left"
+            placeholder="px"
+          />
+          <input
+            data-path="style.left"
+            data-scheme={`calc(var(--left-scale, 0) * var(--left-unit, 1px))`}
+            data-variable="left-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="left-scale"
+            name="left-scale"
+          />
+
+          <label for="left">Derecha:</label>
+          <input
+            data-path="style.right"
+            data-scheme={`calc(var(--right-scale, 0) * var(--right-unit, 1px))`}
+            data-variable="right-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="right"
+            name="right"
+            placeholder="px"
+          />
+          <input
+            data-path="style.right"
+            data-scheme={`calc(var(--right-scale, 0) * var(--right-unit, 1px))`}
+            data-variable="right-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="right-scale"
+            name="right-scale"
+          />
+
+          <label for="left">abajo:</label>
+          <input
+            data-path="style.bottom"
+            data-scheme={`calc(var(--bottom-scale, 0) * var(--bottom-unit, 1px))`}
+            data-variable="bottom-unit"
+            data-starts-with="1"
+            type="text"
+            value="rem"
+            id="bottom"
+            name="bottom"
+            placeholder="px"
+          />
+          <input
+            data-path="style.bottom"
+            data-scheme={`calc(var(--bottom-scale, 0) * var(--bottom-unit, 1px))`}
+            data-variable="bottom-scale"
+            type="number"
+            step="1"
+            value="0"
+            id="bottom-scale"
+            name="bottom-scale"
+          />
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="tools__section">
+    <h3 class="tools__title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M18 14a4 4 0 1 1-3.995 4.2L14 18l.005-.2A4 4 0 0 1 18 14M16.707 2.293a1 1 0 0 1 .083 1.32l-.083.094L15.414 5H19a3 3 0 0 1 2.995 2.824L22 8v3a1 1 0 0 1-1.993.117L20 11V8a1 1 0 0 0-.883-.993L19 7h-3.585l1.292 1.293a1 1 0 0 1-1.32 1.497l-.094-.083l-3-3a.98.98 0 0 1-.28-.872l.036-.146l.04-.104q.087-.191.245-.334l2.959-2.958a1 1 0 0 1 1.414 0M3 12a1 1 0 0 1 .993.883L4 13v3a1 1 0 0 0 .883.993L5 17h3.585l-1.292-1.293a1 1 0 0 1-.083-1.32l.083-.094a1 1 0 0 1 1.32-.083l.094.083l3 3a.98.98 0 0 1 .28.872l-.036.146l-.04.104a1 1 0 0 1-.245.334l-2.959 2.958a1 1 0 0 1-1.497-1.32l.083-.094L8.584 19H5a3 3 0 0 1-2.995-2.824L2 16v-3a1 1 0 0 1 1-1M6 2a4 4 0 1 1-3.995 4.2L2 6l.005-.2A4 4 0 0 1 6 2" />
+      </svg>
+      Transformaciones</h3>
+    <div class="tools__content">
+      <!-- Transformaciones -->
+      <fieldset>
+        <legend>Transformaciones</legend>
+
+        <!-- Rotación -->
+        <div class="transform-option">
+          <label for="rotate">Rotar:</label>
+          <input
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                  calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                  calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                  calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+                ) translate3d(
+                  calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                  calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                  calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+                ) rotateX(
+                  calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+                ) rotateY(
+                  calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+                ) rotateZ(
+                  calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+                ) skew(
+                  calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                  calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+                )  perspective(
+                  calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+                )`}
+            data-variable="transform-rotate-z"
+            type="number"
+            id="rotate"
+            name="rotate"
+            min="-180"
+            max="180"
+            step="1"
+            value="0"
+          />
+
+          <select
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                  calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                  calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                  calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+                ) translate3d(
+                  calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                  calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                  calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+                ) rotateX(
+                  calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+                ) rotateY(
+                  calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+                ) rotateZ(
+                  calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+                ) skew(
+                  calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                  calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+                )  perspective(
+                  calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+                )`}
+            data-variable="transform-rotate-z-unit"
+            value="deg"
+            data-starts-with="1"
+          >
+            <option value="deg">°</option>
+            <option value="rad">rad</option>
+            <option value="grad">grad</option>
+            <option value="turn">turn</option>
+          </select>
+          <span>°</span>
+        </div>
+
+        <!-- Escalado -->
+        <div class="transform-option">
+          <label for="scale-x">Escalar X:</label>
+          <input
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-scale-x"
+            type="number"
+            id="scale-x"
+            name="scale-x"
+            min="0"
+            max="3"
+            step="0.1"
+            value="1"
+          />
+        </div>
+
+        <div class="transform-option">
+          <label for="scale-y">Escalar Y:</label>
+          <input
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-scale-y"
+            type="number"
+            id="scale-y"
+            name="scale-y"
+            min="0"
+            max="3"
+            step="0.1"
+            value="1"
+          />
+        </div>
+
+        <!-- Sesgado -->
+        <!-- He agregado la unidad "deg" para el input de Sesgar X, ya que se trata de un ángulo. -->
+        <div class="transform-option">
+          <label for="skew-x">Sesgar X:</label>
+          <input
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-skew-x"
+            type="number"
+            id="skew-x"
+            name="skew-x"
+            min="-45"
+            max="45"
+            step="1"
+            value="0"
+          />
+          <select
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-skew-x-unit"
+            data-starts-with="1"
+            value="deg"
+          >
+            <option value="deg">°</option>
+            <option value="rad">rad</option>
+            <option value="grad">grad</option>
+            <option value="turn">turn</option>
+            <option value="px">px</option>
+            <option value="%">%</option>
+            <option value="em">em</option>
+            <option value="rem">rem</option>
+            <option value="vw">vw</option>
+            <option value="vh">vh</option>
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+            <option value="in">in</option>
+            <option value="pt">pt</option>
+            <option value="pc">pc</option>
+          </select>
+          <span>°</span>
+        </div>
+        <!-- He agregado la unidad "deg" para el input de Sesgar Y, ya que se trata de un ángulo. -->
+        <div class="transform-option">
+          <label for="skew-y">Sesgar Y:</label>
+          <input
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-skew-y"
+            type="number"
+            id="skew-y"
+            name="skew-y"
+            min="-45"
+            max="45"
+            step="1"
+            value="0"
+          />
+          <select
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-skew-y-unit"
+            data-starts-with="1"
+            value="deg"
+          >
+            <option value="deg">°</option>
+            <option value="rad">rad</option>
+            <option value="grad">grad</option>
+            <option value="turn">turn</option>
+            <option value="px">px</option>
+            <option value="%">%</option>
+            <option value="em">em</option>
+            <option value="rem">rem</option>
+            <option value="vw">vw</option>
+            <option value="vh">vh</option>
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+            <option value="in">in</option>
+            <option value="pt">pt</option>
+            <option value="pc">pc</option>
+          </select>
+          <span>°</span>
+        </div>
+
+        <!-- Profundidad (3D) -->
+        <div class="transform-option">
+          <label for="depth">Profundidad:</label>
+          <input
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-translate-z"
+            type="number"
+            id="depth"
+            name="depth"
+            min="-1000"
+            max="1000"
+            step="10"
+            value="0"
+          />
+          <select
+            id="depth"
+            data-path="style.transform"
+            data-scheme={`scale3d(
+                calc(var(--transform-scale-x, 1) * var(--transform-scale-x-unit, 1)),
+                calc(var(--transform-scale-y, 1) * var(--transform-scale-y-unit, 1)),
+                calc(var(--transform-scale-z, 1) * var(--transform-scale-z-unit, 1))
+              ) translate3d(
+                calc(var(--transform-translate-x, 0) * var(--transform-translate-x-unit, 1px)),
+                calc(var(--transform-translate-y, 0) * var(--transform-translate-y-unit, 1px)),
+                calc(var(--transform-translate-z, 0) * var(--transform-translate-z-unit, 1px))
+              ) rotateX(
+                calc(var(--transform-rotate-x, 0) * var(--transform-rotate-x-unit, 1deg))
+              ) rotateY(
+                calc(var(--transform-rotate-y, 0) * var(--transform-rotate-y-unit, 1deg))
+              ) rotateZ(
+                calc(var(--transform-rotate-z, 0) * var(--transform-rotate-z-unit, 1deg))
+              ) skew(
+                calc(var(--transform-skew-x, 0) * var(--transform-skew-x-unit, 1deg)),
+                calc(var(--transform-skew-y, 0) * var(--transform-skew-y-unit, 1deg))
+              )  perspective(
+                calc(var(--transform-perspective, 1000px) * var(--transform-perspective-unit, 1))
+              )`}
+            data-variable="transform-translate-z-unit"
+            value="px"
+            data-starts-with="1"
+          >
+            <option value="px">px</option>
+            <option value="em">em</option>
+            <option value="rem">rem</option>
+            <option value="%">%</option>
+            <option value="vw">vw</option>
+            <option value="vh">vh</option>
+            <option value="vmin">vmin</option>
+            <option value="vmax">vmax</option>
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+            <option value="in">in</option>
+            <option value="pt">pt</option>
+            <option value="pc">pc</option>
+            <option value="ch">ch</option>
+            <option value="ex">ex</option>
+            <option value="q">q</option>
+            <option value="lh">lh</option>
+          </select>
+          <span>px</span>
+        </div>
+
+        <!-- Origen -->
+        <div class="transform-option">
+          <label for="origin-x">Origen X:</label>
+          <input
+            data-path="style.transformOrigin"
+            data-scheme={`calc(var(--transform-origin-x, 50) * 1%) calc(var(--transform-origin-y, 50) * 1%)`}
+            data-variable="transform-origin-x"
+            type="number"
+            id="origin-x"
+            name="origin-x"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+          />
+
+          <span>%</span>
+          <label for="origin-y">Origen Y:</label>
+          <input
+            data-path="style.transformOrigin"
+            data-scheme={`calc(var(--transform-origin-x, 50) * 1%) calc(var(--transform-origin-y, 50) * 1%)`}
+            data-variable="transform-origin-y"
+            type="number"
+            id="origin-y"
+            name="origin-y"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+          />
+
+          <span>%</span>
+        </div>
+
+        <!-- Backface Visibility -->
+        <div class="transform-option">
+          <label for="backface-visible">Cara Posterior Visible:</label>
+          <select id="backface-visible" name="backface-visible">
+            <option value="visible">Sí</option>
+            <option value="hidden">No</option>
+          </select>
+        </div>
+
+        <!-- Conservar Transformación -->
+        <div class="transform-option">
+          <label for="preserve-transform">Conservar Transformación:</label>
+          <select id="preserve-transform" name="preserve-transform">
+            <option value="yes">Sí</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="tools__section">
+    <h3 class="tools__title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M16.78 7.22c.142.14.22.331.22.53v2.5a.75.75 0 0 1-1.5 0v-.69l-1.72 1.72a.75.75 0 1 1-1.06-1.061L14.44 8.5h-.69a.75.75 0 0 1 0-1.5h2.5a.75.75 0 0 1 .53.22M7 16.25a.75.75 0 0 0 .75.75h2.501a.75.75 0 0 0 0-1.5h-.69l1.72-1.72a.75.75 0 0 0-1.061-1.06L8.5 14.438v-.69a.75.75 0 0 0-1.5 0zm-5-9.5A2.75 2.75 0 0 1 4.75 4h14.5A2.75 2.75 0 0 1 22 6.75v10.5A2.75 2.75 0 0 1 19.25 20H4.75A2.75 2.75 0 0 1 2 17.25zM4.75 5.5c-.69 0-1.25.56-1.25 1.25v10.5c0 .69.56 1.25 1.25 1.25h14.5c.69 0 1.25-.56 1.25-1.25V6.75c0-.69-.56-1.25-1.25-1.25z" />
+      </svg>
+      Tamaños</h3>
+    <div class="tools__content">
+      
+      <fieldset>
+        <legend>Tamaños del elemento</legend>
+      <!-- Ancho -->
+      <label for="width">Ancho:</label>
+      <div class="input-group">
+        <select
+          id="width-unit-select"
+          data-path="style.width"
+          data-scheme={`calc(var(--width-scale) * var(--width-unit, 1px))`}
+          data-variable="width-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.width"
+          data-scheme={`calc(var(--width-scale) * var(--width-unit, 1px))`}
+          data-variable="width-scale"
+          type="number"
+          id="width-scale"
+          name="width-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+      </div>
+
+      <!-- Alto -->
+      <label for="height">Alto:</label>
+      <div class="input-group">
+        <select
+          id="height-unit-select"
+          data-path="style.height"
+          data-scheme={`calc(var(--height-scale) * var(--height-unit, 1px))`}
+          data-variable="height-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.height"
+          data-scheme={`calc(var(--height-scale) * var(--height-unit, 1px))`}
+          data-variable="height-scale"
+          type="number"
+          id="height-scale"
+          name="height-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+      </div>
+      <!-- Ancho Máximo -->
+      <label for="max-width">Ancho Máximo:</label>
+      <div class="input-group">
+        <select
+          id="max-width-unit-select"
+          data-path="style.maxWidth"
+          data-scheme={`calc(var(--max-width-scale) * var(--max-width-unit, 1px))`}
+          data-variable="max-width-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.maxWidth"
+          data-scheme={`calc(var(--max-width-scale) * var(--max-width-unit, 1px))`}
+          data-variable="max-width-scale"
+          type="number"
+          id="max-width-scale"
+          name="max-width-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+      </div>
+      <!-- Alto Máximo -->
+      <label for="max-height">Alto Máximo:</label>
+      <div class="input-group">
+        <select
+          id="max-height-unit-select"
+          data-path="style.maxHeight"
+          data-scheme={`calc(var(--max-height-scale) * var(--max-height-unit, 1px))`}
+          data-variable="max-height-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.maxHeight"
+          data-scheme={`calc(var(--max-height-scale) * var(--max-height-unit, 1px))`}
+          data-variable="max-height-scale"
+          type="number"
+          id="max-height-scale"
+          name="max-height-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+      </div>
+      <!-- Ancho Mínimo -->
+      <label for="min-width">Ancho Mínimo:</label>
+      <div class="input-group">
+        <select
+          id="min-width-unit-select"
+          data-path="style.minWidth"
+          data-scheme={`calc(var(--min-width-scale) * var(--min-width-unit, 1px))`}
+          data-variable="min-width-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.minWidth"
+          data-scheme={`calc(var(--min-width-scale) * var(--min-width-unit, 1px))`}
+          data-variable="min-width-scale"
+          type="number"
+          id="min-width-scale"
+          name="min-width-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+      </div>
+      <!-- Alto Mínimo -->
+      <label for="min-height">Alto Mínimo:</label>
+      <div class="input-group">
+        <select
+          id="min-height-unit-select"
+          data-path="style.minHeight"
+          data-scheme={`calc(var(--min-height-scale) * var(--min-height-unit, 1px))`}
+          data-variable="min-height-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.minHeight"
+          data-scheme={`calc(var(--min-height-scale) * var(--min-height-unit, 1px))`}
+          data-variable="min-height-scale"
+          type="number"
+          id="min-height-scale"
+          name="min-height-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+      </div>
+    </div>
+    </fieldset>
+
+  </div>
+
+  <!-- Estilos -->
+  <div class="tools__section">
+    <h3 class="tools__title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <path fill="currentColor" d="m2.5 19.6l1.3.6v-9L1.4 17c-.4 1.1.1 2.2 1.1 2.6M15.2 4.8l5 12l-7.3 3l-5-11.9v-.1zm.1-2c-.3 0-.5 0-.8.1L7.1 6c-.7.3-1.2 1-1.2 1.8c0 .2 0 .5.1.8l5 11.9c.3.8 1 1.2 1.8 1.2c.3 0 .5 0 .8-.1l7.4-3.1c1-.4 1.5-1.6 1.1-2.6L17.1 4c-.3-.8-1.1-1.2-1.8-1.2m-4.8 7.1c-.6 0-1-.4-1-1s.4-1 1-1s1 .5 1 1s-.4 1-1 1m-4.6 9.9c0 1.1.9 2 2 2h1.4l-3.4-8.3z" />
+      </svg>
+      Estilos</h3>
+    <div class="tools__content">
+      <fieldset>
+        <legend>Estilos</legend>
+      <!-- Opacidad -->
+      <label for="opacity">Opacidad:</label>
+      <input
+        data-path="style.opacity"
+        type="range"
+        id="opacity"
+        name="opacity"
+        min="0"
+        max="1"
+        step="0.1"
+        value="1"
+      />
+
+      <!-- Visible -->
+      <label for="visibility">Visible:</label>
+      <select data-path="style.visibility" id="visibility">
+        <option value="visible">Yes</option>
+        <option value="hidden">No</option>
+      </select>
+
+      <!-- Color de Relleno -->
+      <label for="fill">Fill:</label>
+      <input
+        type="color"
+        data-path="style.backgroundColor"
+        id="fill"
+        name="fill"
+        value="#FFFFFF"
+      />
+
+      <!-- Overflow -->
+      <label for="overflow">Overflow:</label>
+      <select data-path="style.overflow" id="overflow">
+        <option value="visible">Visible</option>
+        <option value="hidden">Hidden</option>
+        <option value="scroll">Scroll</option>
+      </select>
+
+      <!-- Overflow X -->
+      <label for="overflow-x">Overflow X:</label>
+      <select data-path="style.overflowX" id="overflow-x">
+        <option value="visible">Visible</option>
+        <option value="hidden">Hidden</option>
+        <option value="scroll">Scroll</option>
+      </select>
+
+      <!-- Overflow Y -->
+      <label for="overflow-y">Overflow Y:</label>
+      <select data-path="style.overflowY" id="overflow-y">
+        <option value="visible">Visible</option>
+        <option value="hidden">Hidden</option>
+        <option value="scroll">Scroll</option>
+      </select>
+
+      <!-- Radio -->
+      <label for="border-radius">Radius:</label>
+      <div class="input-group">
+        <select
+          id="border-radius-unit-select"
+          data-path="style.borderRadius"
+          data-scheme={`calc(var(--border-radius-scale, 1) * var(--border-radius-unit, 1px))`}
+          data-variable="border-radius-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.borderRadius"
+          data-scheme={`calc(var(--border-radius-scale, 1) * var(--border-radius-unit, 1px))`}
+          data-variable="border-radius-scale"
+          type="number"
+          id="border-radius-scale"
+          name="border-radius-scale"
+          value="10"
+          min="0"
+          step="1"
+        />
+      </div>
+
+      <!-- Border -->
+      <label for="border-style">Border Style:</label>
+      <div class="input-group">
+        <input
+          data-path="style.borderWidth"
+          data-scheme={`calc(var(--border-width-scale, 1) * var(--border-width-unit, 1px))`}
+          data-variable="border-width-scale"
+          type="number"
+          id="border-width-scale"
+          name="border-width-scale"
+          value="1"
+          min="0"
+          step="1"
+        />
+        <select
+          id="border-width-unit-select"
+          data-path="style.borderWidth"
+          data-scheme={`calc(var(--border-width-scale, 1) * var(--border-width-unit, 1px))`}
+          data-variable="border-width-unit"
+          data-starts-with="1"
+        >
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+          <option value="vw">vw</option>
+          <option value="vh">vh</option>
+          <option value="vmin">vmin</option>
+          <option value="vmax">vmax</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+          <option value="in">in</option>
+          <option value="pt">pt</option>
+          <option value="pc">pc</option>
+          <option value="ch">ch</option>
+          <option value="ex">ex</option>
+          <option value="q">q</option>
+          <option value="lh">lh</option>
+        </select>
+        <input
+          data-path="style.borderColor"
+          data-scheme={`var(--border-color-hex, #000000)`}
+          data-variable="border-color-hex"
+          type="color"
+          id="border-color"
+          name="border-color"
+          value="#000000"
+        />
+        <select id="border-style">
+          <option value="solid">Solid</option>
+          <option value="dashed">Dashed</option>
+          <option value="dotted">Dotted</option>
+        </select>
+      </div>
+
+      <!-- Sombras -->
+      <label for="shadows">Shadows:</label>
+      <div class="shadow-group">
+        <label for="shadow-offset-x">Offset X:</label>
+        <input
+          data-path="style.boxShadow"
+          data-scheme="var(--shadow-offset-x, 0px) var(--shadow-offset-y, 0px) var(--shadow-blur, 0px) var(--shadow-spread, 0px) var(--shadow-color, #000)"
+          data-variable="shadow-offset-x"
+          type="number"
+          id="shadow-offset-x"
+          name="shadow-offset-x"
+          placeholder="Offset X"
+          step="1"
+          value="0"
+        />
+        <select id="shadow-offset-x-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="shadow-offset-y">Offset Y:</label>
+        <input
+          data-path="style.boxShadow"
+          data-scheme="var(--shadow-offset-x, 0px) var(--shadow-offset-y, 0px) var(--shadow-blur, 0px) var(--shadow-spread, 0px) var(--shadow-color, #000)"
+          data-variable="shadow-offset-y"
+          type="number"
+          id="shadow-offset-y"
+          name="shadow-offset-y"
+          placeholder="Offset Y"
+          step="1"
+          value="0"
+        />
+        <select id="shadow-offset-y-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="shadow-blur">Blur:</label>
+        <input
+          data-path="style.boxShadow"
+          data-scheme="var(--shadow-offset-x, 0px) var(--shadow-offset-y, 0px) var(--shadow-blur, 0px) var(--shadow-spread, 0px) var(--shadow-color, #000)"
+          data-variable="shadow-blur"
+          type="number"
+          id="shadow-blur"
+          name="shadow-blur"
+          placeholder="Blur"
+          step="1"
+          value="0"
+        />
+        <select id="shadow-blur-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="shadow-spread">Spread:</label>
+        <input
+          data-path="style.boxShadow"
+          data-scheme="var(--shadow-offset-x, 0px) var(--shadow-offset-y, 0px) var(--shadow-blur, 0px) var(--shadow-spread, 0px) var(--shadow-color, #000)"
+          data-variable="shadow-spread"
+          type="number"
+          id="shadow-spread"
+          name="shadow-spread"
+          placeholder="Spread"
+          step="1"
+          value="0"
+        />
+        <select id="shadow-spread-unit">
+          <option value="px">px</option>
+          <option value="em">em</option>
+          <option value="rem">rem</option>
+          <option value="%">%</option>
+        </select>
+        <label for="shadow-color">Color:</label>
+        <input
+          data-path="style.boxShadow"
+          data-scheme="var(--shadow-offset-x, 0px) var(--shadow-offset-y, 0px) var(--shadow-blur, 0px) var(--shadow-spread, 0px) var(--shadow-color, #000)"
+          data-variable="shadow-color"
+          type="color"
+          id="shadow-color"
+          name="shadow-color"
+          value="#000000"
+        />
+        <button id="add-shadow">Add Shadow</button>
+        <script>
+          document
+            .getElementById("add-shadow")
+            ?.addEventListener("click", () => {
+              const offsetX = (
+                document.getElementById("shadow-offset-x") as HTMLInputElement
+              ).value;
+              const offsetXUnit = (
+                document.getElementById(
+                  "shadow-offset-x-unit",
+                ) as HTMLSelectElement
+              ).value;
+              const offsetY = (
+                document.getElementById("shadow-offset-y") as HTMLInputElement
+              ).value;
+              const offsetYUnit = (
+                document.getElementById(
+                  "shadow-offset-y-unit",
+                ) as HTMLSelectElement
+              ).value;
+              const blur = (
+                document.getElementById("shadow-blur") as HTMLInputElement
+              ).value;
+              const blurUnit = (
+                document.getElementById("shadow-blur-unit") as HTMLSelectElement
+              ).value;
+              const spread = (
+                document.getElementById("shadow-spread") as HTMLInputElement
+              ).value;
+              const spreadUnit = (
+                document.getElementById(
+                  "shadow-spread-unit",
+                ) as HTMLSelectElement
+              ).value;
+              const color = (
+                document.getElementById("shadow-color") as HTMLInputElement
+              ).value;
+            });
+        </script>
+      </div>
+
+      <!-- Blending -->
+      <label for="blending">Blending:</label>
+      <select data-path="style.mixBlendMode" id="blending">
+        <option value="normal">Normal</option>
+        <option value="multiply">Multiply</option>
+        <option value="screen">Screen</option>
+      </select>
+
+      <!-- Filtros -->
+      <h4>Filters</h4>
+      <label for="blur">Blur:</label>
+      <select
+        id="blur-unit-select"
+        data-path="style.filter"
+        data-scheme="blur(calc(var(--blur-scale, 1) * var(--blur-unit, 1px)))"
+        data-variable="blur-unit"
+      >
+        <option value="px">px</option>
+        <option value="em">em</option>
+        <option value="rem">rem</option>
+        <option value="%">%</option>
+      </select>
+      <input
+        data-path="style.filter"
+        data-scheme="blur(calc(var(--blur-scale, 1) * var(--blur-unit, 1px)))"
+        data-variable="blur-scale"
+        type="number"
+        id="blur-scale"
+        name="blur-scale"
+        value="5"
+        min="0"
+        step="1"
+      />
+
+      <label for="bg-blur">BG Blur:</label>
+      <select
+        id="bg-blur-unit-select"
+        data-path="style.filter"
+        data-scheme="blur(calc(var(--bg-blur-scale, 1) * var(--bg-blur-unit, 1px)))"
+        data-variable="bg-blur-unit"
+      >
+        <option value="px">px</option>
+        <option value="em">em</option>
+        <option value="rem">rem</option>
+        <option value="%">%</option>
+      </select>
+      <input
+        data-path="style.filter"
+        data-scheme="blur(calc(var(--bg-blur-scale, 1) * var(--bg-blur-unit, 1px)))"
+        data-variable="bg-blur-scale"
+        type="number"
+        id="bg-blur-scale"
+        name="bg-blur-scale"
+        value="5"
+        min="0"
+        step="1"
+      />
+
+      <label for="brightness">Brightness:</label>
+      <select
+        id="brightness-unit-select"
+        data-path="style.filter"
+        data-scheme="brightness(calc(var(--brightness-scale, 1) * var(--brightness-unit, 1%)))"
+        data-variable="brightness-unit"
+      >
+        <option value="%">%</option>
+      </select>
+      <input
+        data-path="style.filter"
+        data-scheme="brightness(calc(var(--brightness-scale, 1) * var(--brightness-unit, 1%)))"
+        data-variable="brightness-scale"
+        type="number"
+        id="brightness-scale"
+        name="brightness-scale"
+        value="50"
+        min="0"
+        step="1"
+      />
+
+      <label for="contrast">Contrast:</label>
+      <select
+        id="contrast-unit-select"
+        data-path="style.filter"
+        data-scheme="contrast(calc(var(--contrast-scale, 1) * var(--contrast-unit, 1%)))"
+        data-variable="contrast-unit"
+      >
+        <option value="%">%</option>
+      </select>
+      <input
+        data-path="style.filter"
+        data-scheme="contrast(calc(var(--contrast-scale, 1) * var(--contrast-unit, 1%)))"
+        data-variable="contrast-scale"
+        type="number"
+        id="contrast-scale"
+        name="contrast-scale"
+        value="150"
+        min="0"
+        step="1"
+      />
+
+      <label for="grayscale">Grayscale:</label>
+      <select
+        id="grayscale-unit-select"
+        data-path="style.filter"
+        data-scheme="grayscale(calc(var(--grayscale-scale, 1) * var(--grayscale-unit, 1%)))"
+        data-variable="grayscale-unit"
+      >
+        <option value="%">%</option>
+      </select>
+      <input
+        data-path="style.filter"
+        data-scheme="grayscale(calc(var(--grayscale-scale, 1) * var(--grayscale-unit, 1%)))"
+        data-variable="grayscale-scale"
+        type="number"
+        id="grayscale-scale"
+        name="grayscale-scale"
+        value="100"
+        min="0"
+        step="1"
+      />
+
+      <label for="hue">Hue:</label>
+      <select
+        id="hue-unit-select"
+        data-path="style.filter"
+        data-scheme="hue-rotate(calc(var(--hue-scale, 1) * var(--hue-unit, 1deg)))"
+        data-variable="hue-unit"
+      >
+        <option value="deg">deg</option>
+        <option value="rad">rad</option>
+        <option value="grad">grad</option>
+        <option value="turn">turn</option>
+      </select>
+      <input
+        data-path="style.filter"
+        data-scheme="hue-rotate(calc(var(--hue-scale, 1) * var(--hue-unit, 1deg)))"
+        data-variable="hue-scale"
+        type="number"
+        id="hue-scale"
+        name="hue-scale"
+        value="60"
+        min="0"
+        step="1"
+      />
+      <!-- Z-Index -->
+      <label for="z-index">Z Index:</label>
+      <input
+        data-path="style.zIndex"
+        type="text"
+        id="z-index"
+        name="z-index"
+        placeholder="1"
+      />
+
+      <!-- Puntero -->
+      <label for="pointer-events">Pointer:</label>
+      <select data-path="style.pointer" id="pointer-events">
+        <option value="auto">Auto</option>
+        <option value="none">None</option>
+      </select>
+
+      <!-- Selección -->
+      <label for="user-select">Select:</label>
+      <select data-path="style.userSelect" id="user-select">
+        <option value="auto">Auto</option>
+        <option value="none">None</option>
+      </select>
+
+      <!-- Scrollbars -->
+      <label for="scrollbars">Scrollbars:</label>
+      <select data-path="style.overflow" id="scrollbars">
+        <option value="show">Show</option>
+        <option value="hide">Hide</option>
+        <option value="auto">Auto</option>
+        <option value="scroll">Scroll</option>
+      </select>
+
+      <!-- Mascara -->
+      <label for="mask">Mask:</label>
+      <input
+        data-path="style.mask"
+        type="text"
+        id="mask"
+        name="mask"
+        placeholder="Linear gradient..."
+      />
+      <button id="add-mask">Add...</button>
+
+      <!-- Overscroll -->
+      <label for="overscroll">Overscroll:</label>
+      <select data-path="style.overscrollBehavior" id="overscroll">
+        <option value="auto">Auto</option>
+        <option value="contain">Contain</option>
+        <option value="none">None</option>
+        <option value="unset">Unset</option>
+        <option value="inherit">Inherit</option>
+        <option value="initial">Initial</option>
+      </select>
+    </div>
+    </fieldset>
+
+  </div>
+
+  <div class="tools__section">
+    <h3 class="tools__title">
+      
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <g fill="currentColor">
+          <path d="M6 17V7h2v10zM16 7v10h2V7z" />
+          <path fill-rule="evenodd" d="M2 3h20v18H2zm2 2v14h16V5z" clip-rule="evenodd" />
+        </g>
+      </svg>
+      Configuración Flexbox</h3>
+    <div class="tools__content">
+      <!-- Configuración del contenedor -->
+      <fieldset>
+        <legend>Contenedor Flex</legend>
+        <label for="display">Display:</label>
+        <select data-path="style.display" id="display">
+          <option value="flex">Flex</option>
+          <option value="inline-flex">Inline Flex</option>
+        </select>
+
+        <label for="flex-direction">Dirección del Flex:</label>
+        <select data-path="style.flexDirection" id="flex-direction">
+          <option value="row">Fila (row)</option>
+          <option value="row-reverse">Fila Invertida (row-reverse)</option>
+          <option value="column">Columna (column)</option>
+          <option value="column-reverse"
+            >Columna Invertida (column-reverse)</option
+          >
+        </select>
+
+        <label for="flex-wrap">Ajuste del Flex:</label>
+        <select data-path="style.flexWrap" id="flex-wrap">
+          <option value="nowrap">Sin Ajuste (nowrap)</option>
+          <option value="wrap">Ajuste (wrap)</option>
+          <option value="wrap-reverse">Ajuste Invertido (wrap-reverse)</option>
+        </select>
+
+        <label for="justify-content">Justificación del Contenido:</label>
+        <select data-path="style.justifyContent" id="justify-content">
+          <option value="flex-start">Inicio (flex-start)</option>
+          <option value="flex-end">Fin (flex-end)</option>
+          <option value="center">Centro (center)</option>
+          <option value="space-between">Espacio Entre (space-between)</option>
+          <option value="space-around">Espacio Alrededor (space-around)</option>
+          <option value="space-evenly">Espacio Uniforme (space-evenly)</option>
+        </select>
+
+        <label for="align-items">Alineación de los Ítems:</label>
+        <select data-path="style.alignItems" id="align-items">
+          <option value="flex-start">Inicio (flex-start)</option>
+          <option value="flex-end">Fin (flex-end)</option>
+          <option value="center">Centro (center)</option>
+          <option value="baseline">Línea Base (baseline)</option>
+          <option value="stretch">Estirar (stretch)</option>
+        </select>
+
+        <label for="align-content">Alineación del Contenido:</label>
+        <select data-path="style.alignContent" id="align-content">
+          <option value="flex-start">Inicio (flex-start)</option>
+          <option value="flex-end">Fin (flex-end)</option>
+          <option value="center">Centro (center)</option>
+          <option value="space-between">Espacio Entre (space-between)</option>
+          <option value="space-around">Espacio Alrededor (space-around)</option>
+          <option value="stretch">Estirar (stretch)</option>
+        </select>
+      </fieldset>
+
+      <!-- Configuración de los elementos flex -->
+      <fieldset>
+        <legend>Elementos Flex</legend>
+        <label for="order">Orden:</label>
+        <input
+          data-path="style.order"
+          type="number"
+          id="order"
+          name="order"
+          min="0"
+          max="10"
+          step="1"
+        />
+
+        <label for="flex-grow">Crecimiento (Flex Grow):</label>
+        <input
+          data-path="style.flexGrow"
+          type="number"
+          id="flex-grow"
+          name="flex-grow"
+          min="0"
+          max="10"
+          step="1"
+        />
+
+        <label for="flex-shrink">Encogimiento (Flex Shrink):</label>
+        <input
+          data-path="style.flexShrink"
+          type="number"
+          id="flex-shrink"
+          name="flex-shrink"
+          min="0"
+          max="10"
+          step="1"
+        />
+
+        <label for="flex-basis">Base Flex:</label>
+        <input
+          data-path="style.flexBasis"
+          type="text"
+          id="flex-basis"
+          name="flex-basis"
+          placeholder="e.g. 10px, 20%, auto"
+        />
+
+        <label for="align-self">Alineación Propia (Align Self):</label>
+        <select id="align-self">
+          <option value="auto">Automático (auto)</option>
+          <option value="flex-start">Inicio (flex-start)</option>
+          <option value="flex-end">Fin (flex-end)</option>
+          <option value="center">Centro (center)</option>
+          <option value="baseline">Línea Base (baseline)</option>
+          <option value="stretch">Estirar (stretch)</option>
+        </select>
+      </fieldset>
+    </div> 
+  </div>
+  <!-- Sección para configuración Grid -->
+  <section class="tools__section">
+    <h2 class="tools__title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm0 9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm10-9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" />
+      </svg>
+      Diagramación (Grid)</h2>
+    
+    <div class="tools__content">
+      
+      <fieldset>
+        <legend>Diagramación (Grid)</legend>
+      <!-- Definición de Columnas del Grid -->
+
+      <label for="grid-columns">Número de Columnas:</label>
+      <input
+        data-path="style.gridColumn"
+        type="number"
+        id="grid-columns"
+        name="grid-columns"
+        min="1"
+        max="12"
+        value="3"
+      />
+
+      <div id="grid-column-settings">
+        <!-- Configuración individual de columnas -->
+        <div class="grid-column-setting">
+          <label for="column-1-width">Columna 1:</label>
+          <div class="column-width-options">
+            <input
+              type="number"
+              id="column-1-width"
+              name="column-1-width"
+              min="1"
+              max="12"
+              value="1"
+            />
+            <select id="column-1-unit" name="column-1-unit">
+              <option value="fr">Fracción (fr)</option>
+              <option value="%">Porcentaje (%)</option>
+              <option value="px">Píxeles (px)</option>
+              <option value="em">Em</option>
+              <option value="rem">Rem</option>
+            </select>
+          </div>
+        </div>
+        <!-- Añadir más configuraciones de columnas según se necesiten -->
+      </div>
+
+      <!-- Botón para añadir más columnas -->
+      <button id="add-column-btn" type="button">Agregar Columna</button>
+
+      <!-- Definición de Filas del Grid -->
+      <label for="grid-rows">Número de Filas:</label>
+      <input
+        data-path="style.gridrow"
+        type="number"
+        id="grid-rows"
+        name="grid-rows"
+        min="1"
+        max="12"
+        value="3"
+      />
+
+      <div id="grid-row-settings">
+        <!-- Configuración individual de filas -->
+        <div class="grid-row-setting">
+          <label for="row-1-height">Fila 1:</label>
+          <div class="row-height-options">
+            <input
+              type="number"
+              id="row-1-height"
+              name="row-1-height"
+              min="1"
+              max="12"
+              value="1"
+            />
+            <select id="row-1-unit" name="row-1-unit">
+              <option value="fr">Fracción (fr)</option>
+              <option value="%">Porcentaje (%)</option>
+              <option value="px">Píxeles (px)</option>
+              <option value="em">Em</option>
+              <option value="rem">Rem</option>
+            </select>
+          </div>
+        </div>
+        <!-- Añadir más configuraciones de filas según se necesiten -->
+      </div>
+
+      <!-- Botón para añadir más filas -->
+      <button id="add-row-btn" type="button">Agregar Fila</button>
+
+      <!-- Espacio entre Elementos -->
+      <label for="grid-gap">Espacio entre Elementos:</label>
+      <input
+        data-path="style.gridGap"
+        type="text"
+        id="grid-gap"
+        name="grid-gap"
+        placeholder="px"
+      />
+
+      </fieldset>
+      <!-- Ubicación y Tamaño de Elementos -->
+      <fieldset>
+        <legend>Ubicación y Tamaño de Elementos</legend>
+
+        <!-- Área del Elemento -->
+        <label for="grid-area">Área del Elemento:</label>
+        <input
+          data-path="style.gridArea"
+          type="text"
+          id="grid-area"
+          name="grid-area"
+          placeholder="Ej. header"
+        />
+
+        <!-- Tamaño en Columnas -->
+        <div class="grid-column-size">
+          <label for="grid-column-start">Columna de Inicio:</label>
+          <input
+            data-path="style.gridColumnStart"
+            type="number"
+            id="grid-column-start"
+            name="grid-column-start"
+            min="1"
+            max="12"
+            value="1"
+          />
+          <label for="grid-column-span">Columnas a Span:</label>
+          <input
+            type="number"
+            id="grid-column-span"
+            name="grid-column-span"
+            min="1"
+            max="12"
+            value="1"
+          />
+        </div>
+
+        <!-- Tamaño en Filas -->
+        <div class="grid-row-size">
+          <label for="grid-row-start">Fila de Inicio:</label>
+          <input
+            type="number"
+            id="grid-row-start"
+            name="grid-row-start"
+            min="1"
+            max="12"
+            value="1"
+          />
+          <label for="grid-row-span">Filas a Span:</label>
+          <input
+            type="number"
+            id="grid-row-span"
+            name="grid-row-span"
+            min="1"
+            max="12"
+            value="1"
+          />
+        </div>
+      </fieldset>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          // Selección de elementos del DOM
+          const gridColumnSettings = document.querySelector(
+            "#grid-column-settings",
+          );
+          const gridRowSettings = document.querySelector("#grid-row-settings");
+          // Botón para agregar nuevas columnas
+          const addColumnBtn = document.querySelector("#add-column-btn");
+          // Botón para agregar nuevas filas
+          const addRowBtn = document.querySelector("#add-row-btn");
+
+          // Selección de inputs y selects ya existentes para columnas
+          const columnInputs = document.querySelectorAll(
+            '.grid-column-setting input[type="number"]',
+          );
+          const columnSelects = document.querySelectorAll(
+            ".grid-column-setting select",
+          );
+
+          // Selección de inputs y selects ya existentes para filas
+          const rowInputs = document.querySelectorAll(
+            '.grid-row-setting input[type="number"]',
+          );
+          const rowSelects = document.querySelectorAll(
+            ".grid-row-setting select",
+          );
+
+          const updateConfig = (value, type, id) => {
+            console.log(`Updating ${type} with id ${id} to value ${value}`);
+          };
+
+          // Agregar event listeners a inputs y selects existentes
+          columnInputs.forEach((input) => {
+            input.addEventListener("change", (event) => {
+              const target = event.target as HTMLInputElement;
+              updateConfig(target.value, "column", input.id);
+            });
+            input.addEventListener("input", (event) => {
+              const target = event.target as HTMLInputElement;
+              updateConfig(target.value, "column", input.id);
+            });
+          });
+
+          rowInputs.forEach((input) => {
+            input.addEventListener("change", (event) => {
+              const target = event.target as HTMLInputElement;
+              updateConfig(target.value, "row", input.id);
+            });
+            input.addEventListener("input", (event) => {
+              const target = event.target as HTMLInputElement;
+              updateConfig(target.value, "row", input.id);
+            });
+          });
+
+          columnSelects.forEach((select) => {
+            select.addEventListener("change", (event) => {
+              const target = event.target as HTMLSelectElement;
+              updateConfig(target.value, "column", select.id);
+            });
+          });
+
+          rowSelects.forEach((select) => {
+            select.addEventListener("change", (event) => {
+              const target = event.target as HTMLSelectElement;
+              updateConfig(target.value, "row", select.id);
+            });
+          });
+
+          // Función para crear un nuevo input para la configuración de columnas
+          const createColumnInput = (id, value) => {
+            const input = document.createElement("input");
+            input.type = "number";
+            const inputConfig = {
+              min: {
+                value: "0",
+                text: "Minimum",
+              },
+              max: {
+                value: "100",
+                text: "Maximum",
+              },
+            };
+            input.min = inputConfig.min.value;
+            input.max = inputConfig.max.value;
+            input.value = value;
+            input.id = `column-input-${id}`;
+            input.name = `column-${id}`;
+            return input;
+          };
+
+          // Función para crear un nuevo select para la configuración de columnas
+          const createColumnSelect = (id) => {
+            const select = document.createElement("select");
+            select.id = `column-select-${id}`;
+            select.name = `column-${id}`;
+
+            const options = {
+              "%": "percentage",
+              px: "pixels",
+              auto: "auto",
+              fr: "flex unit",
+              vw: "viewport width",
+              em: "ems",
+              rem: "root ems",
+            };
+
+            Object.entries(options).forEach(([value, text]) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = value;
+              optionElement.text = text;
+              select.appendChild(optionElement);
+            });
+            return select;
+          };
+
+          // Función para crear un nuevo input para la configuración de filas
+          const createRowInput = (id, value) => {
+            const input = document.createElement("input");
+            input.type = "number";
+            const inputConfig = {
+              min: {
+                value: "0",
+                text: "Minimum",
+              },
+              max: {
+                value: "100",
+                text: "Maximum",
+              },
+            };
+            input.min = inputConfig.min.value;
+            input.max = inputConfig.max.value;
+            input.value = value;
+            input.id = `row-input-${id}`;
+            input.name = `row-${id}`;
+            return input;
+          };
+
+          // Función para crear un nuevo select para la configuración de filas
+          const createRowSelect = (id) => {
+            const select = document.createElement("select");
+            select.id = `row-select-${id}`;
+            select.name = `row-${id}`;
+
+            const options = {
+              "%": "percentage",
+              px: "pixels",
+              auto: "auto",
+              fr: "flex unit",
+              vw: "viewport width",
+              em: "ems",
+              rem: "root ems",
+            };
+
+            Object.entries(options).forEach(([value, text]) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = value;
+              optionElement.text = text;
+              select.appendChild(optionElement);
+            });
+            return select;
+          };
+
+          // Función para agregar un nuevo elemento de configuración de columna
+          const addColumnSetting = () => {
+            const columnSetting = document.createElement("div");
+            columnSetting.className = "grid-column-setting";
+            const input = createColumnInput(columnInputs.length + 1, 1);
+            const select = createColumnSelect(columnInputs.length + 1);
+            columnSetting.appendChild(input);
+            columnSetting.appendChild(select);
+            gridColumnSettings.appendChild(columnSetting);
+          };
+
+          // Función para agregar un nuevo elemento de configuración de fila
+          const addRowSetting = () => {
+            const rowSetting = document.createElement("div");
+            rowSetting.className = "grid-row-setting";
+            const input = createRowInput(rowInputs.length + 1, 1);
+            const select = createRowSelect(rowInputs.length + 1);
+            rowSetting.appendChild(input);
+            rowSetting.appendChild(select);
+            gridRowSettings.appendChild(rowSetting);
+          };
+
+          // Contadores para mantener IDs y nombres únicos
+          let columnIndex = 1;
+          let rowIndex = 1;
+
+          // Función para agregar un nuevo elemento de configuración de columna
+          const createGridColumn = () => {
+            const columnSetting = document.createElement("div");
+            columnSetting.className = "grid-column-setting";
+            const input = createColumnInput(columnIndex, 1);
+            const select = createColumnSelect(columnIndex);
+            columnSetting.appendChild(input);
+            columnSetting.appendChild(select);
+            gridColumnSettings.appendChild(columnSetting);
+            columnIndex++; // Incrementar contador de columnas
+          };
+
+          // Función para agregar un nuevo elemento de configuración de fila
+          const createGridRow = () => {
+            const rowSetting = document.createElement("div");
+            rowSetting.className = "grid-row-setting";
+            const input = createRowInput(rowIndex, 1);
+            const select = createRowSelect(rowIndex);
+            rowSetting.appendChild(input);
+            rowSetting.appendChild(select);
+            gridRowSettings.appendChild(rowSetting);
+            rowIndex++; // Incrementar contador de filas
+          };
+
+          //event listener al botón de Agregar Columna
+          addColumnBtn.addEventListener("click", createGridColumn);
+
+          // event listener al botón de Agregar Fila
+          addRowBtn.addEventListener("click", createGridRow);
+        });
+      </script>
+
+      <!-- Opciones de Alineación -->
+      <fieldset>
+        <legend>Opciones de Alineación</legend>
+
+        <!-- Justificación de Ítems -->
+        <label for="justify-items">Alineación Horizontal de Ítems:</label>
+        <select
+          data-path="style.justifyItems"
+          name="justify-items"
+          id="justify-items"
+          name="justify-items"
+        >
+          <option value="start">Inicio</option>
+          <option value="end">Final</option>
+          <option value="center">Centro</option>
+          <option value="stretch">Estirar</option>
+        </select>
+
+        <!-- Alineación de Ítems -->
+        <label for="align-items">Alineación Vertical de Ítems:</label>
+        <select
+          data-path="style.alignItems"
+          id="align-items"
+          name="align-items"
+        >
+          <option value="start">Inicio</option>
+          <option value="end">Final</option>
+          <option value="center">Centro</option>
+          <option value="stretch">Estirar</option>
+        </select>
+
+        <!-- Justificación del Contenido -->
+        <label for="justify-content">Alineación Horizontal del Contenido:</label
+        >
+        <select
+          data-path="style.justifyContent"
+          id="justify-content"
+          name="justify-content"
+        >
+          <option value="start">Inicio</option>
+          <option value="end">Final</option>
+          <option value="center">Centro</option>
+          <option value="space-between">Espacio Entre</option>
+          <option value="space-around">Espacio Alrededor</option>
+          <option value="space-evenly">Espacio Uniforme</option>
+        </select>
+
+        <!-- Alineación del Contenido -->
+        <label for="align-content">Alineación Vertical del Contenido:</label>
+        <select
+          data-path="style.alignContent"
+          id="align-content"
+          name="align-content"
+        >
+          <option value="start">Inicio</option>
+          <option value="end">Final</option>
+          <option value="center">Centro</option>
+          <option value="space-between">Espacio Entre</option>
+          <option value="space-around">Espacio Alrededor</option>
+          <option value="space-evenly">Espacio Uniforme</option>
+          <option value="stretch">Estirar</option>
+        </select>
+      </fieldset>
+    </div>
+  </section>
+</aside>
+
+<script>
+  import { componentsCreators } from "../ui/components/adapters/components.const";
+  import { createComponenetItemMenu } from "../ui/components/adapters/createComponenetItemMenu";
+  import { renderCompoenetsMenu } from "../ui/components/useCases/renderCompoenentsMenu";
+  import { createToggleButton } from "../ui/components/useCases/toggleLeftBar";
+  import { createRightToggleButton } from "../ui/components/useCases/toggleRightBar";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const $sidebarComponents = document.querySelector<HTMLElement>(
+      "#sidebar_components",
+    );
+    const componenetItemMenuElements = componentsCreators.map(
+      createComponenetItemMenu,
+    );
+    renderCompoenetsMenu($sidebarComponents, componenetItemMenuElements);
+
+    // FUNCIONALIDAD BARRA IZQUIERDA
+    const sidebarId = "sidebar";
+    const $toggleButton = document.getElementById("toggleLeftBar");
+
+    if ($toggleButton) {
+      // Llamar a createToggleButton para agregar la funcionalidad
+      const newToggleButton = createToggleButton(sidebarId);
+      // Reemplazar el botón existente con el nuevo botón
+      $toggleButton.replaceWith(newToggleButton);
+    } else {
+      console.error("No se encontró el botón de toggle");
+    }
+
+    // FUNCIONALIDAD BARRA DERECHA
+    const asideBarId = "rightbar";
+    const $rightButton = document.getElementById("toggleRightBar");
+
+    if ($rightButton) {
+      // Llamar a createToggleButton para agregar la funcionalidad
+      const newrightToggleButton = createRightToggleButton(asideBarId);
+      // Reemplazar el botón existente con el nuevo botón
+      $rightButton.replaceWith(newrightToggleButton);
+    } else {
+      console.error("No se encontró el botón de toggle");
+    }
+  });
+</script>
+
+<script>
+  import { eventsTools } from "../ui/components/adapters/style.toolkit";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    /**
+     * Selección de elementos del canvas y herramientas
+     */
+    const $tools = document.querySelector<HTMLDivElement>(".tools");
+
+    /**
+     * Array de herramientas con atributo data-path
+     */
+    const tools: HTMLElement[] = Array.from(
+      $tools.querySelectorAll<HTMLElement>("[data-path]"),
+    );
+
+    eventsTools(tools);
+  });
+</script>
+
+<style is:global>
+  /* Variables de colores de Material Design */
+  :root {
+    --md-primary: #6200ea;
+    --md-secondary: #03dac6;
+    --md-background: #ffffff;
+    --md-surface: #ffffff;
+    --md-error: #b00020;
+    --md-on-primary: #ffffff;
+    --md-on-secondary: #000000;
+    --md-on-background: #000000;
+    --md-on-surface: #000000;
+    --md-on-error: #ffffff;
+    --md-shadow: rgba(0, 0, 0, 0.1);
+    --md-border-radius: 1rem;
+  }
+
+  /* General */
+  body {
+    font-family: "Roboto", sans-serif;
+    background-color: var(--md-background);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    background-color: #111111;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
+  /* Layout */
+  .layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .layout__topbar {
+    height: 50px;
+    background-color: var(--md-surface);
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px var(--md-shadow);
+  }
+
+  .topbar__logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .topbar__search {
+    margin-left: 20px;
+  }
+
+  .topbar__search input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: var(--md-border-radius);
+    width: 200px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+
+  .topbar__search input[type="text"]:focus {
+    border-color: var(--md-primary);
+  }
+
+  .topbar__user {
+    font-weight: bold;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow: auto;
+    position: absolute;
+    width: min(400px, 100vw);
+    background-color: var(--md-surface);
+    border-right: 1px solid #ccc;
+    box-shadow: 2px 0 4px var(--md-shadow);
+    padding: 0.5rem;
+    padding-block-start: 0px;
+    overflow-x: hidden;
+    background-color: #111111;
+    z-index: 10;
+  }
+  
+  input[type="file"] {
+    display: none;
+  }
+   
+    
+  input[type="file"]  ~ label {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: var(--md-border-radius);
+    font-size: 14px;
+    transition: border-color 0.3s;
+    color: #fff;
+    border: none;
+    outline: none;
+    background-color: #2b2b2b;
+    padding: 10px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: var(--md-border-radius);
+    transition:
+      background-color 300ms,
+      border-color 300ms;
+
+      
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    background-color: #2b2b2b;
+
+    color: #fff;
+    border: none;
+    border-radius: var(--md-border-radius);
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: background-color 300ms;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  input[type="file"] ~ label:hover {
+    background-color: #555;
+    cursor: pointer;
+  }
+
+  .sidebar__nav {
+    position: sticky;
+    top: 0rem;
+    background-color: #111111;
+    padding: 0.5rem;
+    box-shadow: 2px 0 4px var(--md-shadow);
+    border-radius: 0.3rem;
+    box-sizing: border-box;
+    width: calc(100% + 1rem);
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    transform: translateX(-0.5rem);
+    z-index: 20;
+    
+    padding-block-start: 1.2rem;
+    padding-inline-start: 5rem;
+  }
+
+  .sidebar__nav .nav__list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 1rem;
+  }
+
+  .nav__item {
+    padding: 10px;
+    cursor: pointer;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+    border-radius: var(--md-border-radius);
+  }
+
+  .nav__item:hover {
+    background-color: #2b2b2b;
+  }
+
+  .nav__item--active {
+    background-color: var(--md-primary);
+    color: #fff;
+  }
+
+  .sidebar__content {
+    margin-top: 20px;
+  }
+
+  .sidebar__section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #111111;
+    border-radius: var(--md-border-radius);
+    box-shadow: 0 2px 4px var(--md-shadow);
+  }
+
+  .sidebar__section-title {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar__item {
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: var(--md-border-radius);
+    transition: background-color 300ms;
+    list-style: none;
+  }
+
+  .sidebar__item:hover {
+    background-color: #2b2b2b;
+  }
+
+  /* css boton de ocultar barra IZQUIERDA */
+  .sidebar {
+    transition: transform 300ms ease;
+  }
+
+  .sidebar.hidden {
+    transform: translateX(-100%);
+  }
+
+  .toggle-sidebar-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    z-index: 1000; /* Para asegurarse de que el botón esté por encima de la barra lateral */
+    border-radius: var(--md-border-radius);
+  }
+
+  /* css boton de ocultar barra IZQUIERDA */
+  .tools {
+    transition: transform 300ms ease;
+    z-index: 10;
+  }
+
+  .tools.hidden {
+    transform: translateX(100%);
+  }
+
+  .toggle-right-bar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px ;
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    z-index: 1000; /* Para asegurarse de que el botón esté por encima de la barra lateral */
+    border-radius: var(--md-border-radius);
+  }
+
+  .toggle-left-bar:hover,
+  .toggle-right-bar:hover,
+  .toggle-sidebar-button:hover {
+    box-shadow: 0 0 0 1px #ad1785;
+  }
+
+  .toggle-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Main Content */
+  .layout__canvas {
+    padding: 20px;
+    background-color: #f9f9f9;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .canvas {
+    margin: auto;
+    height: calc(100vh - 1rem);
+    padding: 1rem;
+    box-sizing: border-box;
+    width: max-content;
+  }
+
+  .canvas__tabs {
+    display: flex;
+    padding-bottom: 20px;
+  }
+
+  .canvas__tab {
+    padding: 10px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: var(--md-border-radius);
+    transition:
+      background-color 300ms,
+      border-color 300ms;
+  }
+
+  .canvas__tab:hover {
+    background-color: #555;
+  }
+
+  .canvas__tab--active {
+    display: block;
+    background-color: var(--md-primary);
+    color: #9C0780;
+
+    border-color: var(--md-primary);
+
+    background-color: #333333;
+    box-shadow: 0 0 0 1px #9c0880;
+  }
+
+  .canvas__content {
+    display: none;
+    padding: 0px;
+    background-color: #000;
+    border-radius: var(--md-border-radius);
+  }
+
+  .content__section {
+    margin-bottom: 20px;
+  }
+
+  .content__section h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .content__section p {
+    font-size: 14px;
+  }
+
+  /* Tools Sidebar */
+  .tools {
+    top: 0;
+    right: 0;
+    height: 100vh;
+    overflow: auto;
+    position: absolute;
+    width: min(400px, 100vw);
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 4px var(--md-shadow);
+    padding: 10px;
+    background-color: #111111;
+  }
+
+  .first-secction {
+  }
+
+  .tools__section {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: none;
+    border-radius: var(--md-border-radius);
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px var(--md-shadow);
+
+    background-color: #111111;
+  }
+
+  .tools__section:hover {
+    box-shadow: 0 0 0 1px #9c0880;
+  }
+
+  .tools_section_rightbar {
+    margin-top: 60px;
+  }
+
+  .tools__title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #fff;
+    
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .tools__content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .tools__content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  .tools__content input[type="number"],
+  .tools__content input[type="text"],
+  .tools__content select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: var(--md-border-radius);
+    font-size: 14px;
+    transition: border-color 0.3s;
+    color: #fff;
+    border: none;
+    outline: none;
+    background-color: #2b2b2b;
+  }
+
+  .tools__content input[type="number"]:focus,
+  .tools__content input[type="text"]:focus,
+  .tools__content select:focus,
+  .tools__content input[type="number"]:focus-visible,
+  .tools__content input[type="text"]:focus-visible,
+  .tools__content select:focus-visible {
+    border: none;
+    outline: none;
+    box-shadow: 0 0 0 1px #9c0880 !important;
+  }
+
+  .tools__content button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #2b2b2b;
+
+    color: #fff;
+    border: none;
+    border-radius: var(--md-border-radius);
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+
+  .tools__content button:hover {
+    border: none;
+    box-shadow: 0 0 0 1px #9c0880 !important;
+  }
+
+  .tools__content fieldset {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: var(--md-border-radius);
+  }
+
+  .tools__content fieldset legend {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .grid-column-size,
+  .grid-row-size {
+    margin-bottom: 10px;
+  }
+
+  .grid-column-size label,
+  .grid-row-size label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .grid-column-size input,
+  .grid-row-size input {
+    width: calc(50% - 5px);
+    margin-right: 10px;
+    display: inline-block;
+  }
+
+  .grid-column-size select,
+  .grid-row-size select {
+    width: calc(50% - 5px);
+    display: inline-block;
+  }
+
+  .dragging {
+    opacity: 0.6;
+    border: 2px dashed #ff00bf;
+    background-color: #f0f0f0;
+    cursor: grabbing;
+  }
+
+  /* .canvas__content.active
+{
+  display: non;
+  display: block;
+  width: 100vw; 
+  height: 100vh;
+} */
+
+::-webkit-scrollbar {
+  background-color: #333;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 5px;
+}
+
+  .canvas__content {
+    box-shadow: 0 0 0 1px #9c0880;
+    min-height: calc(100vh - 2rem - 60px);
+  }
+
+  .canvas__content.active {
+    display: block; /* Mostrar cuando activo */
+  }
+
+  .canvas__tabs {
+    display: flex;
+  }
+
+  .canvas__tab {
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  .canvas__tab--active {
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+  }
+
+  .canvas__content--active {
+    display: block;
+  }
+
+  /* Estilo para ocultar elementos en la barra lateral */
+  .sidebar__section {
+    display: none;
+  }
+
+  /* Estilo para la pestaña activa */
+  .nav__item--active {
+    background-color: #333333;
+    box-shadow: 0 0 0 1px #9c0880;
+    color: #fff; /* Color de texto para la pestaña activa */
+  }
+</style>
